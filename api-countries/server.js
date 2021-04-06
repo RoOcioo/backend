@@ -1,9 +1,10 @@
 var express = require("express")
 var app = express();
 
+var countries = ["Argentine", "France", "Italie", "Anglaterre", "Alemagne"];
 
 app.get('/countries', function(req, res) {
-    var countries = ["Argentine", "France", "Italie", "Anglaterre", "Alemagne"];
+  
     res.json(countries);
 })
 
