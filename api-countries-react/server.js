@@ -35,9 +35,3 @@ app.listen(port, function () {
 })
 
 
-
-
-
-app.listen(port, () => {
-    console.log("Server à l'écoute dans le port 8000");
-})
