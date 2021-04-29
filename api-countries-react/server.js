@@ -1,28 +1,26 @@
 
 const express = require("express")
-const cors = require("./dataCountries")
-const { countries } = require("./dataCountries.js")
+const app = express();
 
-const app = express()
+const countries  = require("./dataCountries.js")
+
 
 
 const port = 8000
 
 app.get("/countries", (req,res) => {
 
-    res.json({
-        countries
-    })
+    res.json(countries)
 })
 
-app.get("/country/:name",function(req,res){
+app.get("/country/:name",(req,res) =>{
     
-    const pays= req.params.name
+    let pays= req.params.name
     const countriesCount=[]
    
     for (let i=0;i<countries.length;i++){
        
-        if(pays===couentries[i].name){
+        if(pays===countries[i].name){
           countriesCount.push(countries[i])
     }
    }
@@ -30,8 +28,8 @@ app.get("/country/:name",function(req,res){
 
 })
 
-app.listen(port, function () {
-    console.log(`Serveur à l'écoute dans le port ${port}`);
-})
+app.listen(port, () => 
+    console.log(`Serveur à l'écoute dans le port ${port}`)
+)
 
 
