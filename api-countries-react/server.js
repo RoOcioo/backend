@@ -1,35 +1,42 @@
 
 const express = require("express")
 const app = express();
-
+const cors = require('cors')
+app.use(cors())
 const countries  = require("./dataCountries.js")
 
 
 
-const port = 8000
+const port = 8000;
 
-app.get("/countries", (req,res) => {
-
-    res.json(countries)
+app.get("/countries", function (req,res) {
+    console.log("countries", countries)
+    res.json({
+        countries
+    })
 })
 
-app.get("/country/:name",(req,res) =>{
+app.get("/countries/:country",(req,res) =>{
     
-    let pays= req.params.name
+    const country= req.params.country.toUpperCase()
+    console.log("hola",country);
     const countriesCount=[]
    
     for (let i=0;i<countries.length;i++){
+       const currCountry=countries[i]
        
-        if(pays===countries[i].name){
-          countriesCount.push(countries[i])
+        if(currCountry.name.toUpperCase()===country){
+          countriesCount.push(currCountry)
     }
    }
-     res.json(countriesCount)
+   console.log("chau", countriesCount)
+     res.json({countriesCount
+    })
 
 })
 
-app.listen(port, () => 
+app.listen(port, function () {
     console.log(`Serveur à l'écoute dans le port ${port}`)
-)
+});
 
 

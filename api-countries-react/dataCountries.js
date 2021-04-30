@@ -23,4 +23,4 @@ const countries = [
         region: "Europe",
     }
 ]
-module.exports = {countries}
+module.exports = countries
