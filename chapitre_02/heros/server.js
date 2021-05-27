@@ -1,6 +1,6 @@
 const express = require("express")
 const cors = require("cors")
-const superHeros = require("./superHeros.js")
+const { superHeros } = require("./superHeros.js")
 
 const app = express()
 
@@ -22,10 +22,10 @@ app.get("/heroes", (req, res) => {
     })
 })
 
-app.get("heroes/:id", (req, res) => {
-    const id = parseInt(req.params.id)
+app.get("heroes/:name", (req, res) => {
+    const name = req.params.name
     const heroeFound = superHeros.find(elem => {
-        return elem.id === id
+        return elem.name === name
     }) 
 
     res.json({
@@ -33,10 +33,10 @@ app.get("heroes/:id", (req, res) => {
     })
 })
 
-app.get("heroes/:id/powers", (req, res) => {
-    const id = parseInt(req.params.id)
+app.get("heroes/:name/powers", (req, res) => {
+    const name = req.params.name
     const heroeFound = superHeros.find(elem => {
-        return elem.id === id
+        return elem.name === name
     }) 
     const powerFound = heroeFound.power
 
@@ -48,7 +48,7 @@ app.get("heroes/:id/powers", (req, res) => {
 app.post("/heroes", (req, res) => {
     const newsuperHeros = req.body
 
-    heros.push(newsuperHeros)
+    superHeros.push(newsuperHeros)
 
     res.json({
         message: "OK heros ajouté"
@@ -56,10 +56,10 @@ app.post("/heroes", (req, res) => {
 })
 
 
-app.post("/heroes/:id/powers", (req, res) => {
+app.post("/heroes/:name/powers", (req, res) => {
     const newPower = req.body
 
-    heros.push(newPower)
+    superHeros.push(newPower)
 
     res.json({
         message: "Pouvoir ajouté!"
