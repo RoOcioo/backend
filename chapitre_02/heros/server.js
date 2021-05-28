@@ -22,11 +22,11 @@ app.get("/heroes", (req, res) => {
     })
 })
 
-app.get("heroes/:name", (req, res) => {
+app.get("/heroes/:name", (req, res) => {
     const name = req.params.name
     const heroeFound = superHeros.find(elem => {
-        return elem.name === name
-    }) 
+        return elem.name.toLowerCase() === name.toLowerCase()
+    })
 
     res.json({
         heroeFound
@@ -36,30 +36,36 @@ app.get("heroes/:name", (req, res) => {
 app.get("heroes/:name/powers", (req, res) => {
     const name = req.params.name
     const heroeFound = superHeros.find(elem => {
-        return elem.name === name
+        return elem.name.toLowerCase() === name.toLowerCase()
     }) 
-    const powerFound = heroeFound.power
+    
 
     res.json({
-        powerFound
+        powerFound: heroeFound.power
     })
 })
 
-app.post("/heroes", (req, res) => {
-    const newsuperHeros = req.body
+// app.post("/heroes", transformName, (req, res) => {
+    // const newsuperHeros = req.body
 
-    superHeros.push(newsuperHeros)
+    // superHeros.push(newsuperHeros)
 
-    res.json({
-        message: "OK heros ajouté"
-    })
-})
+    // res.json({
+        // message: "OK heros ajouté"
+    // })
+// })
 
 
 app.post("/heroes/:name/powers", (req, res) => {
-    const newPower = req.body
+    const name = req.params.name
+    const newPower = req.body.power
 
-    superHeros.push(newPower)
+    const heroeFound = superHeros.find(elem => {
+        if (elem.name.toLowerCase() === name.toLowerCase()) {
+            return elem.power.push(power)
+        }
+    })
+
 
     res.json({
         message: "Pouvoir ajouté!"
