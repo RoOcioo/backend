@@ -33,7 +33,7 @@ app.get("/heroes/:name", (req, res) => {
     })
 })
 
-app.get("heroes/:name/powers", (req, res) => {
+app.get("/heroes/:name/powers", (req, res) => {
     const name = req.params.name
     const heroeFound = superHeros.find(elem => {
         return elem.name.toLowerCase() === name.toLowerCase()
@@ -44,15 +44,14 @@ app.get("heroes/:name/powers", (req, res) => {
         powerFound: heroeFound.power
     })
 })
+//  app.post("/heroes", transformName, (req, res) => {
+//  const newsuperHeros = req.body.name
 
-// app.post("/heroes", transformName, (req, res) => {
-    // const newsuperHeros = req.body
+     
 
-    // superHeros.push(newsuperHeros)
-
-    // res.json({
-        // message: "OK heros ajouté"
-    // })
+//     res.json({
+//         message: "OK heros ajouté"
+//     })
 // })
 
 
@@ -77,4 +76,4 @@ app.post("/heroes/:name/powers", (req, res) => {
 app.listen(port, () => {
     console.log("Server à l'écoute dans le port " + port);
 })
-
+ 
