@@ -9,6 +9,10 @@ app.use(cors());
 
 const port = 9001
 
+const transformName = (req, res, next) => {
+  
+    next()
+  };
 const debug = (req, res, next) => {
     console.log("Server..");
 
@@ -44,15 +48,15 @@ app.get("/heroes/:name/powers", (req, res) => {
         powerFound: heroeFound.power
     })
 })
-//  app.post("/heroes", transformName, (req, res) => {
-//  const newsuperHeros = req.body.name
-
+  app.post("/heroes", transformName, (req, res) => {
+  const newsuperHeros = req.body
+superHeros.push(newsuperHeros)
      
 
-//     res.json({
-//         message: "OK heros ajouté"
-//     })
-// })
+    res.json({
+         message: "OK heros ajouté"
+     })
+})
 
 
 app.post("/heroes/:name/powers", (req, res) => {
