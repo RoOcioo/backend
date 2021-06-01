@@ -4,20 +4,30 @@ const { superHeros } = require("./superHeros.js")
 
 const app = express()
 
-app.use(express.json()) 
-app.use(cors());
-
-const port = 9001
-
-const transformName = (req, res, next) => {
-  
-    next()
-  };
 const debug = (req, res, next) => {
     console.log("Server..");
 
     next()
 }
+
+app.use(express.json()) 
+app.use(cors());
+app.use(debug);
+
+const port = 9001
+
+
+const transformName = (req, res, next) => {
+  if (req.body.name === undefined) {
+      res.json({
+          errorMessage: "To add a hero send at least he's name"
+      })
+  } else {
+      req.body.name = req.body.name.toLowerCase()
+    
+    next()
+  }
+};
 
 app.get("/heroes", (req, res) => {
     
@@ -49,8 +59,8 @@ app.get("/heroes/:name/powers", (req, res) => {
     })
 })
   app.post("/heroes", transformName, (req, res) => {
-  const newsuperHeros = req.body
-superHeros.push(newsuperHeros)
+    const newsuperHeros = req.body
+    superHeros.push(newsuperHeros)
      
 
     res.json({
@@ -60,22 +70,55 @@ superHeros.push(newsuperHeros)
 
 
 app.post("/heroes/:name/powers", (req, res) => {
-    const name = req.params.name
-    const newPower = req.body.power
+    const name = req.params.name.toLowerCase()
+    
 
     const heroeFound = superHeros.find(elem => {
-        if (elem.name.toLowerCase() === name.toLowerCase()) {
-            return elem.power.push(power)
-        }
-    })
-
-
+        return name === elem.name.toLowerCase();
+        
+    });
+    if (heroeFound) {
+        const newPower = req.body.power;
+        heroeFound.powers.push(newPower);
+    
     res.json({
         message: "Pouvoir ajouté!"
     })
+    } else {
+         res.json({
+         errorMessage: 'Heros pas trouvé',
+    });
+  }
+});
+
+const testingName = (req, res, next) => {
+    const name = req.params.name.toLowerCase();
+
+    const newsuperHeros = superHeros.find (elem => {
+        return elem.name.toLowerCase() === name
+    })
+    console.log(newsuperHeros);
+
+    if (newsuperHeros) {
+        next();
+    } else {
+        res.json("Heros dont exist")
+    }
+    
+  };
+
+app.delete("/heroes/:name", testingName, (req, res) => {
+   const newsuperHeros = req.params.name.toLowerCase();
+    res.json({
+        message: `Hero ${req.params.name} effacé correctement`
+    }) 
+    
 })
-
-
+app.delete("/heroes/:name/power/:power", testingName, (req, res) => {
+    res.json({
+        message: `Le pouvoir ${req.params.power} du ${req.params.name} effacé correctement`
+    })
+})
 
 app.listen(port, () => {
     console.log("Server à l'écoute dans le port " + port);
