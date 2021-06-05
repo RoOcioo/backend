@@ -79,7 +79,7 @@ app.post("/heroes/:name/powers", (req, res) => {
     });
     if (heroeFound) {
         const newPower = req.body.power;
-        heroeFound.powers.push(newPower);
+        heroeFound.power.push(newPower);
     
     res.json({
         message: "Pouvoir ajouté!"
@@ -102,23 +102,75 @@ const testingName = (req, res, next) => {
     if (newsuperHeros) {
         next();
     } else {
-        res.json("Heros dont exist")
+        res.json({
+            errorMessage: "Heros dont exist"
+        })
     }
     
   };
 
 app.delete("/heroes/:name", testingName, (req, res) => {
-   const newsuperHeros = req.params.name.toLowerCase();
+   const name = req.params.name.toLowerCase();
+
+//    superHeros = superHeros.filter(elem => {
+//         return elem.name.toLowerCase() !== name
+//     })
+
+for (var i = 0; i < superHeros.length; i++) {
+    if (superHeros[i].name.toLowerCase() === name) {
+        superHeros.splice(i, 1)
+    }
+}
+
     res.json({
-        message: `Hero ${req.params.name} effacé correctement`
+        message: `Hero ${name} effacé correctement`
     }) 
     
 })
 app.delete("/heroes/:name/power/:power", testingName, (req, res) => {
+    const name = req.params.name.toLowerCase()
+    const newPower = req.params.power.toLowerCase()
+
+    const newsuperHeros = superHeros.find(elem => {
+        return elem.name.toLowerCase() === name
+    })
+    const indexPower = newsuperHeros.power.findIndex(elem => {
+        return elem === newPower
+    })
+
+    if (indexPower > -1) {
+        newsuperHeros.power.splice(indexPower, 1)
+
+        res.json({
+            message: `Le pouvoir ${newPower} de ${name} a été effacé correctement`
+        })
+    } else {
+        res.json({
+            message: `Le pouvoir ${newPower} n'existe pas dans l'héro ${name}`
+        })
+    }
+
+})
+app.put("/heroes/:name", testingName, (req, res) => {
+    const name = req.params.name.toLowerCase()
+    const newsuperHeros = req.body
+    
+    const heroId = superHeros.findIndex(elem => {
+        return elem.name.toLowerCase() === name
+    })
+
+    superHeros[heroId] = newsuperHeros
+
+    // superHeros.splice(heroId, 1, newHero) // Same as above
+
     res.json({
-        message: `Le pouvoir ${req.params.power} du ${req.params.name} effacé correctement`
+        message: `${name} a été remplace correctement`
     })
 })
+
+
+
+ 
 
 app.listen(port, () => {
     console.log("Server à l'écoute dans le port " + port);
