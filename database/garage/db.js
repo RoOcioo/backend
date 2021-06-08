@@ -4,19 +4,19 @@ const mongoose = require('mongoose')
 const { Schema, model } = require('mongoose')
 
 mongoose.connect('mongodb://localhost:27017/garage', (err) => {
-    if (err) {
-        console.error(err)
-    } else {
-        console.log("I'm connected to the database");
-    }
-}) ;
+  if (err) {
+    console.error(err)
+  } else {
+    console.log("I'm connected to the database");
+  }
+});
 
 const car = new mongoose.Schema({
-    id : ID,
-    brand : String,
-    model: String,
-    year: Number,
-    created: { type: Date, default: Date.now },
+  id: ID,
+  brand: String,
+  model: String,
+  year: Number,
+  created: { type: Date, default: Date.now },
 });
 
 const car = mongoose.model('Car', car);
@@ -41,8 +41,38 @@ const troisiemeCar = new car({
 
 car.save();
 
-car.findById({_id: "60be1877ce7d1d41388dc6d9"}, (err, car) => {
-    if (!err) {
-      console.log(car); 
-    }
-  });
+car.findById({ _id: "60be1877ce7d1d41388dc6d9" }, (err, car) => {
+  if (!err) {
+    console.log(car);
+  }
+});
+
+const updateCar = async () => {
+  const updateYear = await car.update
+    ({ _id: "60be1877ce7d1d41388dc6d9" }, { year: 2000 })
+}
+
+updateCar();
+
+const effacerCar = async () => {
+  const effacerCars = await car.deleteMany
+    ({ marque: "Renault" })
+}
+
+effacerCar();
+
+const ajouterCars = [
+
+  { marque: 'Aston Martin', modele: 'DB9', year: 2010 },
+  { marque: 'Range Rover', modele: 'Discovery Sport', year: 2017 }
+
+];
+
+car.insertMany(ajouterCars, (err, newCar) => {
+  if(!err){
+    console.log("Nouvelle voiture");
+    console.log(newCar);
+}
+})
+
+ });
