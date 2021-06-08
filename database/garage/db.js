@@ -1,7 +1,4 @@
-
-
 const mongoose = require('mongoose')
-const { Schema, model } = require('mongoose')
 
 // part 1
 mongoose.connect('mongodb://127.0.0.1:27017/garage', (err) => {
@@ -20,74 +17,82 @@ const carSchema = new mongoose.Schema({
   created: { type: Date, default: Date.now },
 });
 
-const car = mongoose.model('Car', carSchema);
+const Car = mongoose.model('Car', carSchema);
 
 // part 3
-const premierCar = new car({
+
+Car.insertMany([
+  {
   brand: 'Renault',
   model: 'Espace',
   year: 1999
-});
-premierCar.save((err, document) => {
-  if(err) console.log(err);
-  console.log(document)
-})
-console.log(car);
+},
 
-const deuxiemeCar = new car({
+{
   brand: 'Renault',
   model: 'Scenic',
   year: 2004
-});
-deuxiemeCar.save((err, document) => {
-  if(err) console.log(err);
-  console.log(document)
-})
-console.log(car);
-
-const troisiemeCar = new car({
+},
+{
   brand: 'Peugeot',
   model: '308',
   year: 2017,
-});
+},
 
-troisiemeCar.save((err, document) => {
-  if(err) console.log(err);
-  console.log(document)
+]).then(data => {
+  console.log(data)
+}).catch(err => {
+  console.log("Error insertMany Cars: ", err);
 })
-console.log(car);
 
-car.findById({ _id: "60be1877ce7d1d41388dc6d9" }, (err, car) => {
-  if (!err) {
-    console.log(car);
+const findById = async () => {
+  try {
+    const car = await Car.findById("60bf6ba05af23a21ebedc0ac")
+
+    console.log("findCar", car)
+} catch (err) {
+    console.error(err)
+}
+}
+findById()
+
+const updateCarById = async (newValues) => {
+    try {
+      const car = await Car.findByIdAndUpdate("60bf6ba05af23a21ebedc0ac", newValues)
+        
+      console.log("updateCarByID", car);
+  } catch (err) {
+      console.error(err)
   }
-});
+}
+updateCarById()
 
-const updateCar = async () => {
-  const updateYear = await car.update
-    ({ _id: "60be1877ce7d1d41388dc6d9" }, { year: 2000 })
+const updateCar = async (newValues) => {
+
+  try {
+      const car =  await Car.findById("60bf6ba05af23a21ebedc0ac")
+
+      car.model = "Espace 2"
+
+      await car.save()
+      
+      console.log("updateCar", car);
+  } catch (err) {
+      console.error(err)
+  }
+}
+updateCar()
+
+const effacerManyCars = async () => {
+try {
+
+   await Car.deleteMany
+    ({ brand: "Renault" })
+
+} catch (err) {
+  console.error(err)
+}
 }
 
-updateCar();
-
-const effacerCar = async () => {
-  const effacerCars = await car.deleteMany
-    ({ marque: "Renault" })
-}
-
-effacerCar();
-
-const ajouterCars = [
-
-  { marque: 'Aston Martin', modele: 'DB9', year: 2010 },
-  { marque: 'Range Rover', modele: 'Discovery Sport', year: 2017 }
-
-];
-
-car.insertMany(ajouterCars, (err, newCar) => {
-  if(!err){
-    console.log("Nouvelle voiture");
-    console.log(newCar);
-}
-})
+effacerManyCars()
 
