@@ -1,11 +1,13 @@
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
+const Heros = require("./model/heros")
+
 const app = express()
 
 const port = 9001
 
-mongoose.connect("mongodb://localhost:27017/heros", (err) => {
+mongoose.connect("mongodb://localhost:27017/herosdb", (err) => {
     if (err) {
         console.error(err)
     } else {
@@ -13,15 +15,6 @@ mongoose.connect("mongodb://localhost:27017/heros", (err) => {
     }
 })
 
-const herosSchema = mongoose.Schema({
-    name: String,
-    power: String,
-    color: String,
-    isAlive: Boolean,
-    age: Number,
-    image: String
-})
-const Heros = mongoose.model("hero", herosSchema)
 
 app.get("/heroes", async (req,res) => {
     try {
@@ -33,10 +26,9 @@ app.get("/heroes", async (req,res) => {
     catch (error) {
         console.error("Error", error)
 
-        res.json({
-            message: "Error.. "
-        })
+        res.status(500).json({ errorMessage: "There was a problem :(" })
     }
+
 })
 app.get("/heroes/:name", async (req, res) => {
 

@@ -1,8 +1,8 @@
 
 const mongoose = require('mongoose')
-const Hero = require("./model/hero")
+const Heros = require("./model/heros")
 
-mongoose.connect("mongodb://localhost:27017/herosDB", (err) => {
+mongoose.connect("mongodb://localhost:27017/heros", (err) => {
     if (err) {
         console.error(err);
     } else {
@@ -13,9 +13,9 @@ mongoose.connect("mongodb://localhost:27017/herosDB", (err) => {
 const addHeros = async () => {
 
     try {
-        await Hero.deleteMany({})
+        await Heros.deleteMany({})
 
-        await Hero.insertMany([
+        await Heros.insertMany([
             {
                 name: "Iron Man",
                 powers: ["money"],
