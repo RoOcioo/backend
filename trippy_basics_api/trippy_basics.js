@@ -31,7 +31,7 @@ app.use(debug)
 
 app.get('/hotels', (req, res) => {
   try {
-    const hotels = await Hotel.find()
+    const hotels = await Hotel.find(hotels)
     res.json('hotelsroute');
   } catch (err) {
     console.log(err)
@@ -80,6 +80,7 @@ app.put('/hotels/:id', async (req, res) => {
     const hotel = await Hotel.updateOne({ _id: hotelId }, { name: name })
     res.json('nouveauhotel');
   } catch (err) {
+    console.log(error)
     res.status(500).json({ errormessage: "There was a problem :(" })
   }
 });
@@ -98,6 +99,79 @@ app.delete('/hotels/:id', async (req, res) => {
     res.status(500).json({ errormessage: "There was a problem :(" })
   }
 })
+
+app.get('/restaurants', async (req, res) => { 
+  try {
+      const restaurant = await Restaurant.find(restaurant)
+      res.json('restaurantsroute')
+  } catch (err) {
+      console.error(err)
+      res.status(500).json({ errorMessage: "There was a problem :( " })
+  }
+  
+})
+
+app.get('/restaurants/:id', async (req, res) => {
+   try {
+      const restaurantId = req.params.id
+      const restaurant = await Restaurant.findById(restaurantId)
+      console.log("restaurant", restaurant)
+
+
+      if (restaurant) {
+          res.json({ restaurant })
+      } else {
+          res.json({
+             errorMessage: "Restaurant not found"
+          })
+      }
+  } catch (err) {
+      console.error(err)
+      res.status(500).json({ errorMessage: "There was a problem :(" })
+  }
+
+})
+app.post('/restaurants', async (req, res) => {
+  try {
+      const restaurant = req.body
+      const newRestaurant = await Restaurant.create(restaurant)
+      res.json({
+         message: "New Restaurant" 
+        })
+
+  } catch (err) {
+      console.error(error);
+      res.json({ 
+        errorMessage: "There was a problem :(" })
+  }
+})
+
+app.put('/restaurants/:id', async (req, res) => {
+  try {
+      const restaurantId = req.params.id
+      const nameRest = req.query.name
+      console.log('restaurantId', restaurantId, 'nameRest', nameRest)
+      const restaurant = await Restaurant.findByIdAndUpdate(restaurantId, { nameRest: nameRest })
+      res.json({ message: 'NouveauRestaurant' })
+  } catch (err) {
+      console.error(err);
+      res.status(500).json({ errorMessage: "There was a problem :(" })
+  }
+
+})
+
+app.delete("/restaurants/:id", async (req, res) => {
+  try {
+      const restaurantId = req.params.id
+      const effacerRestaurant = await Restaurant.findByIdAndDelete(restaurantId)
+      res.json({ message: 'Restaurant effacé' })
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ errorMessage: "There was a problem :(" })
+  }
+})
+
+
 
 app.get("*", (req, res) => {
   res.json({
