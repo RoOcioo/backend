@@ -26,35 +26,45 @@ app.get("/", async (req, res) => {
         res.json(user)
     } catch (err) {
         console.log("Error", error);
-        res.status(500).json({message: "There was a problem"})
+        res.status(400).json({message: "There was a problem :("})
     }
 
 
 })
 
 app.get("/users/add", async (req,res) => {
-   try {
-      const user = req.body 
-      const newUser = await User.create(user)
-
-      res.json({
-          message : "The new user was added",
-          newUser
-      })
+      expressValidator.body("username").isEmail((value) => {
+        var schema = new passwordValidator();
+        schema
+          .is().min(4)
+          .is().max(20) 
+          .has().not().spaces() 
+          return schema.validate(value);
+        }),
+          (req, res) => {
+              const errors = validationResult(req);
+              if (errors.isEmpty() === false) {
+                  res.json({
+                      errors: errors.array() // to be used in a json loop
+                  });
+                  return;
+              } else {
+                  res.json({
+                      success: true,
+                      message: 'The new user was added'
+                  });
+              }
+          }
+        });
       
-  } catch (error) {
-      console.log(error);
-      res.status(400).json({message : "There was a problem :("})
-  }
-})
 
 app.get("/users/:username", async (req, res) => {
   try {
       const username = req.params.username
-      const user = await User.findById(username)
+      const user = await User.findByOne({username: username})
 
       if(user){
-      res.json(user)
+      res.json({user})
       } else {
           res.json({
               message : "The user cant not found"
@@ -63,7 +73,7 @@ app.get("/users/:username", async (req, res) => {
       
   } catch (error) {
       console.log(error)
-      res.status(400).json({message : "There was a problem :("})
+      res.status(400).json({message : "There was a problem :(" })
   }
 })
 
