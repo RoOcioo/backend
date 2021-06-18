@@ -1,7 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const { getUsers, getUser, getEmail, addUser, getId } = require("../controllers/userControllers")
-const { validationUsers } = require("../middlewares/validationsMiddlewares")
+const { validationUsers } = require("../middlewares/validationMiddlewares")
 
 
 router.get("/", getUsers)
