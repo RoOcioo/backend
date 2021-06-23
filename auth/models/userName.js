@@ -4,11 +4,11 @@ const UserSchema = new mongoose.Schema({
     username: { String, unique: true },
     email: { String, unique: true },
     password: {String, required: true },
-    created: { type: Date, default: Date.now }
+    role: Number
 })
 
-const User = mongoose.model("User", UserSchema)
+const userModel = mongoose.model("User", UserSchema)
 
 
 
-module.exports = User
+module.exports = userModel  

@@ -1,28 +1,48 @@
-import User from "../models/User";
-import jwt from "jsonwebtoken";
-import config from "../config";
+import userModel from "../models/user";
+const bcryptjs = require("bcryptjs")
+const jwt = require("jsonwebtoken")
+const config = require("../config.js")
 
 const signUp = async (req, res) => {
-  try {
-    const { username, email, password, roles } = req.body;
-    const newUser = new User({
-        username,
-        email,
-        password: await User.encryptPassword(password),
-      });
-  
-// const signIn = async (req, res) => {
-//         try {
-//           const userFound = await User.findOne({ email: req.body.email }).populate(
-//             " username"
-          
-//             const token = jwt.sign({ id: userFound._id }, config.secret_password, {
-//                 expiresIn: 3600, 
-//               });
-          
-//               res.json({ token });
-//             } catch (error) {
-//               console.log(error);
-//             }
+    try {
+        const username = req.body.username
+        const password = bcryptjs.hashSync(req.body.password)
+        const role = req.body.role
 
-export default {signUp, signIn}
+        const user = await userModel.create({ username, password, role })
+
+        res.json({ message: "User was created!", user })
+    } catch (error) {
+        console.log("Error: ", error)
+        res.status(500).json({ message: "There was an error while treating the request" })
+    }
+}
+
+
+const logIn = async (req, res) => {
+    try {
+        const username = req.body.username
+        const user = await userModel.findOne({ username })
+
+        const result = bcryptjs.compareSync(req.body.password, user.password)
+
+        if (result) {
+            const token = jwt.sign(
+                {
+                    id: user._id
+                }, config.secret,
+                {
+                    expiresIn: 60 * 60
+                })
+
+            res.json({ message: "You're now login!", token })
+        } else {
+            res.status(401).json({ message: "Login failed" })
+        }
+    } catch (error) {
+        console.log("Error: ", error)
+        res.status(500).json({ message: "There was an error while treating the request" })
+    }
+}
+
+export default { signUp, logIn }
